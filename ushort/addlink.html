@@ -1,0 +1,46 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<title>Url Shortener</title>
+	<style type="text/css" media="screen">
+		#addurl > input {
+			display:block;
+		}
+	</style>
+	<script type="text/javascript" charset="utf-8">
+		window.onload=function() {
+			document.getElementById('submit').onclick=function() {
+				var name=document.getElementById('uname').value;
+				var url=document.getElementById('uaddr').value;
+				if(!name.match(/^[a-zA-Z0-9]+$/)) {
+					alert("Name cannot contain any spaces, and must consist exclusively of alphanumeric characters");
+					return;
+				}
+				if(!url.match(/^(http|ftp)s?:\/\/.*\..+$/)) {
+					alert("Invalid url (must begin with http/ftp)");
+					return;
+				}
+				var xo=new XMLHttpRequest;
+				xo.open('GET', 'index.cgi?name='+encodeURI(name)+'&url='+encodeURI(url), false);
+				xo.send();
+				if(xo.response == "1") {
+					var link=window.location.href.replace(/[^/]*\/[^/]*$/,"") + name;
+					document.getElementById('result').innerHTML="Success, shortened url is <a href='" + link + "'>" + link + "</a>";
+				} else {
+					document.getElementById('result').innerHTML=name+" already redirects to "+xo.responseText;
+				}
+			};
+		};
+	</script>
+	
+</head>
+<body>
+	<div id="addurl">
+		Name: <input type="text" id="uname"/>
+		Url:  <input type="text" id="uaddr"/>
+		<input value="Shorten Url" type="button" id="submit"/>
+		<p id="result"></p>
+	</div>
+</body>
+</html>
